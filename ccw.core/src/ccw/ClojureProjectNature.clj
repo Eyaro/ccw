@@ -11,7 +11,7 @@
 (ns ccw.ClojureProjectNature
   (:import
     [ccw CCWPlugin ClojureCore]
-    [java.io IOException File]
+    [java.io IOException File] 
     [ccw.builder ClojureBuilder]
     [org.eclipse.core.runtime CoreException Platform Path Status IPath IProgressMonitor FileLocator]
     [org.eclipse.core.resources WorkspaceJob IResource]

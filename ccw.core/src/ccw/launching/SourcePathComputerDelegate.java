@@ -33,7 +33,6 @@ import org.eclipse.jdt.launching.sourcelookup.containers.JavaSourcePathComputer;
 import org.eclipse.jdt.launching.sourcelookup.containers.PackageFragmentRootSourceContainer;
 
 import ccw.CCWPlugin;
-import ccw.clojure.util.ClojurePlugin;
 
 public class SourcePathComputerDelegate extends JavaSourcePathComputer {
 

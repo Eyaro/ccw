@@ -49,16 +49,17 @@ public class ClojureVisitor implements IResourceVisitor {
 	public ClojureVisitor(ClojureClient clojureClient) {
 		this.clojureClient = clojureClient;
 	}
-	public void visit (Map<IFolder, IFolder> srcFolders) throws CoreException {
-        for(Map.Entry<IFolder, IFolder> srcFolderEntry : srcFolders.entrySet()){
-        	setSrcFolder(srcFolderEntry);
-            srcFolderEntry.getKey().accept(this);
-        }
+
+	public void visit (Map<IFolder, IFolder> srcFolders) throws
+	CoreException {
+		for(Map.Entry<IFolder, IFolder> srcFolderEntry :
+			srcFolders.entrySet()){
+			setSrcFolder(srcFolderEntry);
+			srcFolderEntry.getKey().accept(this);
+		}
 		if (clojureClient!=null) {
 			for (String maybeLibName: clojureLibs) {
-				System.out.println("compiling:'" + maybeLibName + "'");
 				Map result = (Map) clojureClient.remoteLoadRead(CompileLibAction.compileLibCommand(maybeLibName));
-				System.out.println("compile result:" + result);
 				if (result != null) {
 					//response-type" -1, "response" "[{\"file-name\" \"Compiler.java\", \"line-number\" 4186, \"message\
 					if (Integer.valueOf(-1).equals(result.get("response-type"))) {
@@ -71,7 +72,8 @@ public class ClojureVisitor implements IResourceVisitor {
 									System.out.println("error message:" + message);
 									Matcher matcher = ERROR_MESSAGE_PATTERN.matcher(message);
 									if (matcher.matches()) {
-										System.out.println("match found for message:'" + message + "'");
+										System.out.println("match found for message:'" + message +
+												"'");
 										String messageBody = matcher.group(MESSAGE_GROUP);
 										String filename = matcher.group(FILENAME_GROUP);
 										String lineStr = matcher.group(LINE_GROUP);
@@ -79,10 +81,12 @@ public class ClojureVisitor implements IResourceVisitor {
 										System.out.println("file:" + filename);
 										System.out.println("line:" + lineStr);
 										if (!NO_SOURCE_FILE.equals(filename)) {
-											createMarker(filename, Integer.parseInt(lineStr), messageBody);
+											createMarker(filename, Integer.parseInt(lineStr),
+													messageBody);
 										}
 									} else {
-										System.out.println("no match found for message:'" + message + "'");
+										System.out.println("no match found for message:'" + message
+												+ "'");
 									}
 								}
 							}
@@ -91,7 +95,11 @@ public class ClojureVisitor implements IResourceVisitor {
 				}
 			}
 		}
-	}
+		clojureClient.remoteLoadRead("(ccw.debug.serverrepl/namespaces-info)");
+	} 
+	
+	
+
 	
 	//"java.lang.Exception: Unable to resolve symbol: pairs in this context (sudoku_solver.clj:130)"
 	private static final Pattern ERROR_MESSAGE_PATTERN = Pattern.compile("^(java.lang.Exception: )?(.*)\\((.+):(\\d+)\\)$");
